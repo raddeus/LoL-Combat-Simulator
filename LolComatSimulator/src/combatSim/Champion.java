@@ -15,6 +15,9 @@ public class Champion implements Runnable {
 	private boolean stop = false;
 	private double lastDamageTaken;
 	private boolean victory = false;
+	private boolean stunned = false;
+	private long stunDuration = 2000;
+	private String champName;
 
 	// use these to give relevant infos.
 	// private double totalDamageTaken;
@@ -27,9 +30,10 @@ public class Champion implements Runnable {
 	public Champion() {
 	}
 
-	public Champion(StatEntryPane Pane, double Health, int AttackDamage,
+	public Champion(String ChampName, StatEntryPane Pane, double Health, int AttackDamage,
 			double LifeSteal, double AttackSpeed, double Armor,
 			double CritStrike, double CritDamagePercent, double Dodge) {
+		this.champName = ChampName;
 		this.pane = Pane;
 		this.health = Health;
 		this.attackDamage = AttackDamage;
@@ -40,6 +44,7 @@ public class Champion implements Runnable {
 		this.lifeSteal = LifeSteal;
 		this.victory = false;
 		this.dodge = Dodge;
+		
 
 	}
 	// methods
@@ -50,6 +55,7 @@ public class Champion implements Runnable {
 		Random crit = new Random();
 		double damageGiven;
 		double didyoucrit = (double) crit.nextInt(100);
+
 		if (didyoucrit < criticalStrike) {
 			damageGiven = attackDamage * ((critDamagePercent + 100) / 100);
 			System.out
@@ -64,6 +70,7 @@ public class Champion implements Runnable {
 			pane.setLiveOutput("ATTACK!");
 			return damageGiven;
 		}
+
 
 	}
 
@@ -139,6 +146,10 @@ public class Champion implements Runnable {
 	public void setNotReady() {
 		isReadyToAttack = false;
 	}
+	
+	public void setStunned(boolean b){
+		stunned = b;
+	}
 
 	public void setLifeSteal(double d) {
 		lifeSteal = d;
@@ -160,6 +171,17 @@ public class Champion implements Runnable {
 	public void run() {
 		stop = false;
 		while (!stop && this.health > 0) {
+			if(stunned){
+				//sleep for stun duration
+				try {
+					Thread.sleep(stunDuration);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}finally{
+					stunned = false;
+				}
+			}
+			isReadyToAttack = true;
 			try {
 				System.out.println("sleeping for"
 						+ (long) convertAtkSpd(attackSpeed));
@@ -167,7 +189,7 @@ public class Champion implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			isReadyToAttack = true;
+			
 		}
 	}
 

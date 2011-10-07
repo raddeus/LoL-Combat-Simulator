@@ -54,8 +54,8 @@ public class MainWindow extends JFrame {
 		JButton btnFight = new JButton("FIGHT");
 		btnFight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				leftChamp = leftPane.getChampion();
-				rightChamp = rightPane.getChampion();
+				leftChamp = leftPane.getChampion("LeftChamp");
+				rightChamp = rightPane.getChampion("RightChamp");
 				System.out.println("LeftChamp has " + leftChamp.getHealth()
 						+ " hp");
 				System.out.println("RightChamp has " + rightChamp.getHealth()

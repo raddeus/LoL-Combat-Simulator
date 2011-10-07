@@ -98,7 +98,7 @@ public class StatEntryPane extends JPanel {
 		lblCurrentHealth.setText(" "+health+"/"+maxHealth);
 	}
 	
-	public Champion getChampion(){
+	public Champion getChampion(String ChampName){
 	armor = Double.parseDouble(txtArmor.getText());
 	attackDamage = Integer.parseInt(txtAttackDamage.getText());
 	attackSpeed = Double.parseDouble(txtAttackSpeed.getText());
@@ -107,7 +107,7 @@ public class StatEntryPane extends JPanel {
 	health = Integer.parseInt(txtHealth.getText());
 	critdamage = Double.parseDouble(txtCritDamage.getText());
 	dodge = Double.parseDouble(txtDodge.getText());
-	Champion out = new Champion(this, health, attackDamage, lifeSteal, attackSpeed, armor, criticalStrike, critdamage, dodge);
+	Champion out = new Champion(ChampName, this, health, attackDamage, lifeSteal, attackSpeed, armor, criticalStrike, critdamage, dodge);
 	System.out.println("creating new champion with health:"+health);
 	return out;
 	}
