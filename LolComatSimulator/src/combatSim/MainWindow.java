@@ -19,6 +19,9 @@ public class MainWindow extends JFrame {
 	Thread FightManagerThread;
 	Champion leftChamp;
 	Champion rightChamp;
+	Ability leftAbility;
+	Ability rightAbility;
+	
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private final JLabel lblDisclaimerThisApp = new JLabel(
@@ -26,6 +29,8 @@ public class MainWindow extends JFrame {
 			"There will be bugs and accuracy errors for the time being.<br>If you would " +
 			"like to point an error out to me<br>Please do so on the reddit post<br>or email" +
 			" me at<br>thadblankenship@gmail.com </html>");
+	private final AbilityPane rightAbilityPane = new AbilityPane();
+	private final AbilityPane leftAbilityPane = new AbilityPane();
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -43,25 +48,29 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		setTitle("LoL AD Simulator");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 544, 524);
+		setBounds(100, 100, 1250, 740);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[215.00][][215.00]", "[grow][][][grow][grow]"));
-		contentPane.add(leftPane, "cell 0 0,grow");
+		contentPane.setLayout(new MigLayout("", "[grow][215.00][215.00][]", "[grow][][][grow][grow]"));
+		contentPane.add(leftAbilityPane, "cell 0 0,grow");
+		contentPane.add(leftPane, "cell 1 0,grow");
 		contentPane.add(rightPane, "cell 2 0,grow");
+		
+		contentPane.add(rightAbilityPane, "cell 3 0,grow");
 		JButton btnFight = new JButton("FIGHT");
 		btnFight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				FightManager = new Fight(leftPane, rightPane);
+				leftAbility = leftAbilityPane.getAbility();
+				rightAbility = rightAbilityPane.getAbility();
+				FightManager = new Fight(leftPane, rightPane, leftAbility, rightAbility);
 				FightManagerThread = new Thread(FightManager);
 				FightManager.initFight();
 				FightManagerThread.start();
 			}
 		});
-		contentPane.add(btnFight, "cell 1 2");
-		contentPane.add(lblDisclaimerThisApp, "cell 0 4 3 1");
+		contentPane.add(btnFight, "cell 1 2 2 1,alignx center");
+		contentPane.add(lblDisclaimerThisApp, "cell 1 4 2 1");
 	}
 
 }

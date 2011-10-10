@@ -19,9 +19,6 @@ public class Champion implements Runnable {
 	private boolean victory = false;
 	private long stunDuration;
 	private String champName;
-	private boolean hasStun;
-	private long stunCooldown;
-	private boolean readyToStun;
 	private boolean isBlinded = false;
 	private long currentBlindDuration = 0;
 
@@ -33,8 +30,8 @@ public class Champion implements Runnable {
 	private ChampionPane pane;
 
 	private Champion otherChamp;
-	private Attack attackManager;
-	private Ability abilityManager;
+	private Attack attack;
+	private Ability ability;
 	private Thread attackThread;
 	private Thread abilityThread;
 
@@ -44,10 +41,11 @@ public class Champion implements Runnable {
 	public Champion(String ChampName, ChampionPane Pane, double Health,
 			int AttackDamage, double LifeSteal, double AttackSpeed,
 			double Armor, double CritStrike, double CritDamagePercent,
-			double Dodge, boolean HasStun, long StunDuration, long StunCooldown) {
+			double Dodge) {
 		this.champName = ChampName;
 		this.pane = Pane;
 		this.maxHealth = Health;
+		this.currentHealth = Health;
 		this.attackDamage = AttackDamage;
 		this.attackSpeed = AttackSpeed;
 		this.armor = Armor;
@@ -56,20 +54,18 @@ public class Champion implements Runnable {
 		this.lifeSteal = LifeSteal;
 		this.victory = false;
 		this.dodge = Dodge;
-		this.hasStun = HasStun;
-		this.stunDuration = StunDuration;
-		this.stunCooldown = StunCooldown;
 
 	}
 
 	@Override
 	public void run() {
-		attackManager = new Attack(this, otherChamp);
-		abilityManager = new Ability(this, otherChamp, stunCooldown,
-				stunDuration);
-
-		attackThread = new Thread(attackManager);
-		abilityThread = new Thread(abilityManager);
+		attack = new Attack(this, otherChamp);
+		
+		ability.setThisChampion(this);
+		ability.setOtherChampion(otherChamp);
+		
+		attackThread = new Thread(attack);
+		abilityThread = new Thread(ability);
 
 		attackThread.start();
 		abilityThread.start();
@@ -87,19 +83,19 @@ public class Champion implements Runnable {
 		return 1000 / d;
 	} // milliseconds for the threads to wait.
 
-	public double getRawDamageOut() {
+	public double getRawAttackDamageOut() {
 		Random crit = new Random();
 		double damageGiven;
 		double didyoucrit = (double) crit.nextInt(100);
 
 		if (didyoucrit < criticalStrike) {
 			damageGiven = attackDamage * ((critDamagePercent + 100) / 100);
-			pane.setLiveOutput("I CRIT");
+			otherChamp.setLiveOutput("CRIT");
 			return damageGiven;
 
 		} else {
 			damageGiven = attackDamage;
-			pane.setLiveOutput("ATTACK!");
+			otherChamp.setLiveOutput("Hit");
 			return damageGiven;
 		}
 
@@ -109,34 +105,35 @@ public class Champion implements Runnable {
 		otherChamp = champion;
 	}
 
-	public void takeDamage(double RawDamageIn) {
+	public void takeAttackDamage(double rawDamage) {
 		double damageTaken;
 		Random dodgeRandom = new Random();
 		double didyoudodge = (double) dodgeRandom.nextInt(100);
 		if (didyoudodge < this.dodge) {
 			// you dodged
 			lastDamageTaken = 0;
-			pane.setLiveOutput("I DODGED");
+			setLiveOutput("DODGE!");
 			// System.out.println("Dodged - 0 dmg taken.");
 		} else {
 			if (this.armor >= 0)// calculates damage after armor
 			{// i hate you thad
-				System.out.println("took in " + RawDamageIn + " damage");
-				damageTaken = (RawDamageIn * (100 / (100 + this.armor)));
+				System.out.println("took in " + rawDamage + " damage");
+				damageTaken = (rawDamage * (100 / (100 + this.armor)));
 				currentHealth -= damageTaken;
 				lastDamageTaken = damageTaken;
-				pane.setLiveOutput(Integer.toString((int) damageTaken));
-				// System.out.println("Took" + damageTaken +
-				// " mitigated damage");
-				// System.out.println("CURRENT HP:"+health);
+				setLiveOutput(Integer.toString((int) damageTaken));
 			} else {
-				damageTaken = RawDamageIn; // no armor, returning true damage
+				damageTaken = rawDamage; // no armor, returning true damage
 				currentHealth -= damageTaken;
-				pane.setLiveOutput(Integer.toString((int) damageTaken));
+				setLiveOutput(Integer.toString((int) damageTaken));
 				lastDamageTaken = damageTaken;
-				// System.out.println("CURRENT HP:"+health);
 			}
 		}
+	}
+
+	private void setLiveOutput(String string) {
+		pane.setLiveOutput(string);
+		
 	}
 
 	// getters
@@ -222,8 +219,8 @@ public class Champion implements Runnable {
 
 	public void stun(long duration) {
 		this.pane.setCCStatus("STUNNED");
-		attackManager.pause(duration);
-		abilityManager.pause(duration);
+		attack.pause(duration);
+		ability.pause(duration);
 
 		// sleeps self
 		try {
@@ -238,24 +235,82 @@ public class Champion implements Runnable {
 	}
 
 	public void blind(long duration) {
+		this.pane.setCCStatus("BLINDED");
+		attack.pause(duration);
+
+		// sleeps self
 		try {
 			Thread.sleep(duration);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			this.pane.setCCStatus("-");
 		}
-		this.attackManager.pause(duration);
 
 	}
 
 	public void silence(long duration) {
+		this.pane.setCCStatus("Silenced");
+		ability.pause(duration);
 		try {
 			Thread.sleep(duration);
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			this.pane.setCCStatus("-");
 		}
-		this.abilityManager.pause(duration);
 
+	}
+	public void suppress(long duration) {
+		this.pane.setCCStatus("SUPPRESSED");
+		attack.pause(duration);
+		ability.pause(duration);
+
+		// sleeps self
+		try {
+			Thread.sleep(duration);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			this.pane.setCCStatus("-");
+		}
+		
+	}
+
+	public void snare(long duration) {
+		this.pane.setCCStatus("SNARED");
+
+//movementManager.pause(duration);
+		// sleeps self
+		try {
+			Thread.sleep(duration);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			this.pane.setCCStatus("-");
+		}
+		
+	}
+
+	public void knockup(long duration) {
+		this.pane.setCCStatus("KNOCKUP");
+		attack.pause(duration);
+		ability.pause(duration);
+
+		// sleeps self
+		try {
+			Thread.sleep(duration);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			this.pane.setCCStatus("-");
+		}
+		
 	}
 
 	public void requestStop() {
@@ -278,13 +333,6 @@ public class Champion implements Runnable {
 		return victory;
 	}
 
-	public boolean isReadyToStun() {
-		return readyToStun;
-	}
-
-	public boolean hasStun() {
-		return hasStun;
-	}
 
 	public long getStunDuration() {
 		return stunDuration;
@@ -293,4 +341,9 @@ public class Champion implements Runnable {
 	public long getCurrentBlindDuration() {
 		return currentBlindDuration;
 	}
+
+	public void setAbility(Ability Ability) {
+	ability = Ability;
+	}
+
 }

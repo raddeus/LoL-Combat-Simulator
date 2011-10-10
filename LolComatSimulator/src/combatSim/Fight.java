@@ -6,10 +6,14 @@ public class Fight implements Runnable {
 	private Champion RightChamp;
 	private ChampionPane leftPane;
 	private ChampionPane rightPane;
+	private Ability leftAbility;
+	private Ability rightAbility;
 
-	public Fight(ChampionPane LeftPane, ChampionPane RightPane) {
+	public Fight(ChampionPane LeftPane, ChampionPane RightPane, Ability LeftAbility, Ability RightAbility) {
 		this.leftPane = LeftPane;
 		this.rightPane = RightPane;
+		this.leftAbility = LeftAbility;
+		this.rightAbility = RightAbility;
 	}
 
 	Thread LeftChampThread;
@@ -20,7 +24,8 @@ LeftChamp = leftPane.getChampion("leftChamp");
 RightChamp = rightPane.getChampion("rightChamp");
 LeftChamp.setOtherChamp(RightChamp);
 RightChamp.setOtherChamp(LeftChamp);
-
+LeftChamp.setAbility(leftAbility);
+RightChamp.setAbility(rightAbility);
 
 		System.out.println("Starting Threads");
 		LeftChampThread = new Thread(LeftChamp);

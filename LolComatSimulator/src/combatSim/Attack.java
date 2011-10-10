@@ -23,15 +23,10 @@ public class Attack extends Champion implements Runnable {
 	@Override
 	public void run() {
 		convertedAttackSpeed = (long) champion.convertAtkSpd(champion.getAttackSpeed());
-		//
-		//Copy pasted in here. This is the attack thread. It covers ad based attacks.
-		//And will have all of the commands to do manipulate it. Also need an ability thread.
-		//
+
 		while(true){
 		if(paused){
 			try {
-				System.out.println("SLEEPING CUZ IM PAUSED "
-						+ pauseDuration);
 				Thread.sleep(pauseDuration);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -45,7 +40,7 @@ public class Attack extends Champion implements Runnable {
 		stop = false;
 		while (!stop && !paused && champion.getHealth() > 0) {
 		
-			otherChampion.takeDamage(champion.getRawDamageOut());
+			otherChampion.takeAttackDamage(champion.getRawAttackDamageOut());
 			champion.healLifeSteal(otherChampion.getLastDamageTaken());
 			//wait between autos
 			
@@ -60,19 +55,6 @@ public class Attack extends Champion implements Runnable {
 		}
 		}
 	
-		//
-		//
-		//
-		
-//		while (champion.isReadyToAttack()) {
-//			System.out.println("I'm ATTACKING HURRRR!");
-//			otherChampion.takeDamage(champion.getRawDamageOut());
-//
-//			champion.healLifeSteal(otherChampion.getLastDamageTaken());
-//			champion.setNotReady();
-//			// TODO Auto-generated method stub
-//
-//		}
 
 	}
 

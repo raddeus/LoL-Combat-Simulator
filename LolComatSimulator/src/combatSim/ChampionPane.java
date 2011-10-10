@@ -26,9 +26,6 @@ public class ChampionPane extends JPanel {
 	private int maxHealth;
 	private double dodge;
 	private double critdamage;
-	private boolean hasStun = false;
-	private long stunDuration;
-	private long stunCooldown;
 
 	JLabel lblAttackDamage = new JLabel("Attack Damage");
 	JLabel lblAttackSpeed = new JLabel("Attack Speed");
@@ -40,20 +37,14 @@ public class ChampionPane extends JPanel {
 	JLabel lblCurrentHealth = new JLabel("Health");
 	JLabel lblLiveOutput = new JLabel("LiveOutput");
 	JLabel lblDodge = new JLabel("Dodge%");
-	JLabel lblStunCooldown = new JLabel("Cooldown(ms)");
 
 	private JProgressBar pbCurrentHealth = new JProgressBar();
 	private final JTextField txtDodge = new JTextField();
 	private final JLabel lblCritDamage = new JLabel("CritDamage%");
 	private final JTextField txtCritDamage = new JTextField();
 	private final JLabel lblHeal = new JLabel(" ");
-	private final JCheckBox chckbxHardcc = new JCheckBox(
-			"HardCC   Duration(ms):");
-	private final JTextField txtStunDuration = new JTextField();
 
 	Fight FightManager;
-
-	private final JTextField txtStunCooldown = new JTextField();
 	private final JLabel label = new JLabel("-----------------");
 
 	public ChampionPane(Fight manager) {
@@ -92,16 +83,6 @@ public class ChampionPane extends JPanel {
 		txtCritDamage.setText("100");
 		txtCritDamage.setColumns(10);
 		add(txtCritDamage, "cell 1 7,growx");
-
-		add(chckbxHardcc, "cell 0 8,alignx right");
-		txtStunDuration.setColumns(10);
-
-		add(txtStunDuration, "cell 1 8,growx");
-
-		add(lblStunCooldown, "cell 0 9,alignx trailing");
-		txtStunCooldown.setColumns(10);
-
-		add(txtStunCooldown, "cell 1 9,growx");
 		
 		add(label, "cell 0 10 2 1,alignx center");
 		add(lblLiveOutput, "cell 0 12 2 1,alignx center");
@@ -118,14 +99,14 @@ public class ChampionPane extends JPanel {
 		pbCurrentHealth.setMaximum(health);
 		pbCurrentHealth.setValue(health);
 		pbCurrentHealth.repaint();
-		lblCurrentHealth.setText(" " + health + "/" + health);
+		lblCurrentHealth.setText(health + "/" + health);
 		maxHealth = health;
 	}
 
 	public void setPbarHp(int health) {
 		pbCurrentHealth.setValue(health);
 		pbCurrentHealth.repaint();
-		lblCurrentHealth.setText(" " + health + "/" + maxHealth);
+		lblCurrentHealth.setText(health + "/" + maxHealth);
 	}
 
 	public Champion getChampion(String ChampName) {
@@ -137,19 +118,10 @@ public class ChampionPane extends JPanel {
 		health = Integer.parseInt(txtHealth.getText());
 		critdamage = Double.parseDouble(txtCritDamage.getText());
 		dodge = Double.parseDouble(txtDodge.getText());
-		if (chckbxHardcc.isSelected()) {
-			hasStun = true;
-			stunDuration = Long.parseLong(txtStunDuration.getText());
-			stunCooldown = Long.parseLong(txtStunCooldown.getText());
-		} else {
-			hasStun = false;
-			stunDuration = 0;
-			stunCooldown = 0;
-		}
 
 		Champion out = new Champion(ChampName, this, health, attackDamage,
 				lifeSteal, attackSpeed, armor, criticalStrike, critdamage,
-				dodge, hasStun, stunDuration, stunCooldown);
+				dodge);
 		System.out.println("creating new champion with health:" + health);
 		return out;
 	}
