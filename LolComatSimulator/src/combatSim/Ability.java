@@ -1,16 +1,32 @@
 package combatSim;
 
-public class AbilityManager extends Champion implements Runnable {
+public class Ability extends Champion implements Runnable {
 
 	private long cooldown;
 	private Champion champ;
 	private Champion otherChamp;
-	private long stunDuration;
 	private boolean ready = false;
 	private boolean paused = false;
 	private long pauseDuration;
 
-	public AbilityManager(Champion ThisChampion, Champion OtherChampion,
+//	private boolean stuns;
+//	private boolean blinds;
+//	private boolean snares;
+//	private boolean suppresses;
+//	private boolean silences;
+//	private boolean knockups;
+//	
+//	Basically, you will pass an ability in without many parameters. Then you will setStuns()...etc
+//	
+	private long stunDuration;
+//	private long blindDuration;
+//	private long snareDuration;
+//	private long suppressDuration;
+//	private long silenceDuration;
+//	private long knockupDuration;
+	
+	
+	public Ability(Champion ThisChampion, Champion OtherChampion,
 			long Cooldown, long StunDuration) {
 		cooldown = Cooldown;
 		champ = ThisChampion;

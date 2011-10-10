@@ -8,7 +8,7 @@ import javax.swing.JProgressBar;
 import java.awt.Color;
 import javax.swing.JCheckBox;
 
-public class StatEntryPane extends JPanel {
+public class ChampionPane extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JTextField txtAttackDamage;
 	private JTextField txtAttackSpeed;
@@ -51,12 +51,12 @@ public class StatEntryPane extends JPanel {
 			"HardCC   Duration(ms):");
 	private final JTextField txtStunDuration = new JTextField();
 
-	FightManager FightManager;
+	Fight FightManager;
 
 	private final JTextField txtStunCooldown = new JTextField();
 	private final JLabel label = new JLabel("-----------------");
 
-	public StatEntryPane(FightManager manager) {
+	public ChampionPane(Fight manager) {
 		this.FightManager = manager;
 
 		setLayout(new MigLayout("", "[grow][55.00,grow]", "[][][][][][][][][][][][24.00][][][][][]"));

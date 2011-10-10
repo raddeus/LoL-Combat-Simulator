@@ -1,6 +1,6 @@
 package combatSim;
 
-public class AttackManager extends Champion implements Runnable {
+public class Attack extends Champion implements Runnable {
 	private Champion champion;
 	private Champion otherChampion;
 	private boolean stop = false;
@@ -9,7 +9,7 @@ public class AttackManager extends Champion implements Runnable {
 	Thread pauseThread = new Thread();
 	private long pauseDuration;
 	
-	public AttackManager(Champion Champion, Champion OtherChampion) {
+	public Attack(Champion Champion, Champion OtherChampion) {
 		this.champion = Champion;
 		this.otherChampion = OtherChampion;
 	}

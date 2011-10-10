@@ -36,12 +36,13 @@ public class AbilityPane extends JPanel {
 	private JTextField textField_21;
 	private JTextField textField_22;
 	private JTextField textField_23;
+	private JTextField textField_24;
 
 	/**
 	 * Create the panel.
 	 */
 	public AbilityPane() {
-		setLayout(new MigLayout("", "[80.00][grow][grow][grow][]", "[][][][][][][][][][][][][][][][][][][][][][]"));
+		setLayout(new MigLayout("", "[80.00][grow][grow][grow][grow]", "[][][][][][][][][][][][][][][][][][][][][][]"));
 		
 		JRadioButton rdbtnMagic = new JRadioButton("Magic");
 		buttonGroup.add(rdbtnMagic);
@@ -54,6 +55,13 @@ public class AbilityPane extends JPanel {
 		JRadioButton rdbtnTrue = new JRadioButton("True");
 		buttonGroup.add(rdbtnTrue);
 		add(rdbtnTrue, "cell 2 0");
+		
+		JLabel lblRank = new JLabel("Rank:");
+		add(lblRank, "cell 3 0,alignx trailing");
+		
+		textField_24 = new JTextField();
+		add(textField_24, "cell 4 0,growx");
+		textField_24.setColumns(10);
 		
 		JLabel lblBaseDamage = new JLabel("Base Damage");
 		add(lblBaseDamage, "cell 0 1,alignx trailing");
@@ -92,6 +100,9 @@ public class AbilityPane extends JPanel {
 		textField_21 = new JTextField();
 		add(textField_21, "cell 3 3,growx");
 		textField_21.setColumns(10);
+		
+		JCheckBox checkBox_3 = new JCheckBox("%");
+		add(checkBox_3, "cell 4 3");
 		
 		JLabel lblMrScaling = new JLabel("MR Scaling %");
 		add(lblMrScaling, "cell 0 4,alignx trailing");

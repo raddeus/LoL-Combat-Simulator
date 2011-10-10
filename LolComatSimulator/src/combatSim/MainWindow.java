@@ -13,9 +13,9 @@ import javax.swing.JLabel;
 
 public class MainWindow extends JFrame {
 
-	FightManager FightManager;
-	StatEntryPane leftPane = new StatEntryPane(FightManager);
-	StatEntryPane rightPane = new StatEntryPane(FightManager);
+	Fight FightManager;
+	ChampionPane leftPane = new ChampionPane(FightManager);
+	ChampionPane rightPane = new ChampionPane(FightManager);
 	Thread FightManagerThread;
 	Champion leftChamp;
 	Champion rightChamp;
@@ -54,7 +54,7 @@ public class MainWindow extends JFrame {
 		btnFight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				FightManager = new FightManager(leftPane, rightPane);
+				FightManager = new Fight(leftPane, rightPane);
 				FightManagerThread = new Thread(FightManager);
 				FightManager.initFight();
 				FightManagerThread.start();

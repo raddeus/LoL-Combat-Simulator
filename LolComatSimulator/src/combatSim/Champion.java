@@ -30,18 +30,18 @@ public class Champion implements Runnable {
 	// private double totalDamageHealed;
 	// private double totalDamageMitigatedArmor;
 	// private double totalDamageDealt;
-	private StatEntryPane pane;
+	private ChampionPane pane;
 
 	private Champion otherChamp;
-	private AttackManager attackManager;
-	private AbilityManager abilityManager;
+	private Attack attackManager;
+	private Ability abilityManager;
 	private Thread attackThread;
 	private Thread abilityThread;
 
 	public Champion() {
 	}
 
-	public Champion(String ChampName, StatEntryPane Pane, double Health,
+	public Champion(String ChampName, ChampionPane Pane, double Health,
 			int AttackDamage, double LifeSteal, double AttackSpeed,
 			double Armor, double CritStrike, double CritDamagePercent,
 			double Dodge, boolean HasStun, long StunDuration, long StunCooldown) {
@@ -64,8 +64,8 @@ public class Champion implements Runnable {
 
 	@Override
 	public void run() {
-		attackManager = new AttackManager(this, otherChamp);
-		abilityManager = new AbilityManager(this, otherChamp, stunCooldown,
+		attackManager = new Attack(this, otherChamp);
+		abilityManager = new Ability(this, otherChamp, stunCooldown,
 				stunDuration);
 
 		attackThread = new Thread(attackManager);

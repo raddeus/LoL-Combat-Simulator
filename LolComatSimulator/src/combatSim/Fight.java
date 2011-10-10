@@ -1,13 +1,13 @@
 package combatSim;
 
-public class FightManager implements Runnable {
+public class Fight implements Runnable {
 
 	private Champion LeftChamp;
 	private Champion RightChamp;
-	private StatEntryPane leftPane;
-	private StatEntryPane rightPane;
+	private ChampionPane leftPane;
+	private ChampionPane rightPane;
 
-	public FightManager(StatEntryPane LeftPane, StatEntryPane RightPane) {
+	public Fight(ChampionPane LeftPane, ChampionPane RightPane) {
 		this.leftPane = LeftPane;
 		this.rightPane = RightPane;
 	}
