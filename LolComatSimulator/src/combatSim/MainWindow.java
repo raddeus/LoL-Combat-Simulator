@@ -13,9 +13,9 @@ import javax.swing.JLabel;
 
 public class MainWindow extends JFrame {
 
-	StatEntryPane leftPane = new StatEntryPane();
-	StatEntryPane rightPane = new StatEntryPane();
 	FightManager FightManager;
+	StatEntryPane leftPane = new StatEntryPane(FightManager);
+	StatEntryPane rightPane = new StatEntryPane(FightManager);
 	Thread FightManagerThread;
 	Champion leftChamp;
 	Champion rightChamp;
@@ -43,26 +43,18 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		setTitle("LoL AD Simulator");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 484, 524);
+		setBounds(100, 100, 544, 524);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[182.00][][187.00]",
-				"[grow][][][grow][grow]"));
+		contentPane.setLayout(new MigLayout("", "[215.00][][215.00]", "[grow][][][grow][grow]"));
 		contentPane.add(leftPane, "cell 0 0,grow");
 		contentPane.add(rightPane, "cell 2 0,grow");
 		JButton btnFight = new JButton("FIGHT");
 		btnFight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				leftChamp = leftPane.getChampion("LeftChamp");
-				rightChamp = rightPane.getChampion("RightChamp");
-				System.out.println("LeftChamp has " + leftChamp.getHealth()
-						+ " hp");
-				System.out.println("RightChamp has " + rightChamp.getHealth()
-						+ " hp");
+				
 				FightManager = new FightManager(leftPane, rightPane);
-				FightManager.addLeftChampion(leftChamp);
-				FightManager.addRightChampion(rightChamp);
 				FightManagerThread = new Thread(FightManager);
 				FightManager.initFight();
 				FightManagerThread.start();

@@ -2,8 +2,8 @@ package combatSim;
 
 public class FightManager implements Runnable {
 
-	Champion LeftChamp;
-	Champion RightChamp;
+	private Champion LeftChamp;
+	private Champion RightChamp;
 	private StatEntryPane leftPane;
 	private StatEntryPane rightPane;
 
@@ -14,12 +14,18 @@ public class FightManager implements Runnable {
 
 	Thread LeftChampThread;
 	Thread RightChampThread;
-
+	
 	public void initFight() {
+LeftChamp = leftPane.getChampion("leftChamp");
+RightChamp = rightPane.getChampion("rightChamp");
+LeftChamp.setOtherChamp(RightChamp);
+RightChamp.setOtherChamp(LeftChamp);
+
 
 		System.out.println("Starting Threads");
 		LeftChampThread = new Thread(LeftChamp);
 		RightChampThread = new Thread(RightChamp);
+		
 		LeftChampThread.start();
 		RightChampThread.start();
 
@@ -27,38 +33,23 @@ public class FightManager implements Runnable {
 
 	@Override
 	public void run() {
+		
+
+		
 		System.out.println("Fight Manager thread starting. Leftchamphealth:"
 				+ LeftChamp.getHealth() + "Right Health:"
 				+ RightChamp.getHealth());
 		System.out.println("initiating both progress bars...");
 		leftPane.initPbar((int) LeftChamp.getHealth());
 		rightPane.initPbar((int) RightChamp.getHealth());
-		while ((LeftChamp.getHealth() > 0) && (RightChamp.getHealth() > 0)) {
+		while ((LeftChamp.getCurrentHealth() > 0) && (RightChamp.getCurrentHealth() > 0)) {
 
-			if (RightChamp.isReadyToAttack()) {
-				System.out.println("Right attacks left");
-				LeftChamp.takeDamage(RightChamp.getRawDamageOut());
-				leftPane.setPbarHp((int) LeftChamp.getHealth());
-				RightChamp.healLifeSteal(LeftChamp.getLastDamageTaken());
-				RightChamp.setNotReady();
-			}
-			if (LeftChamp.isReadyToAttack()) {
-				System.out.println("Left attacks right");
-				RightChamp.takeDamage(LeftChamp.getRawDamageOut());
-				rightPane.setPbarHp((int) RightChamp.getHealth());
-				LeftChamp.healLifeSteal(RightChamp.getLastDamageTaken());
-				LeftChamp.setNotReady();
-			}
-
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+leftPane.setPbarHp((int)LeftChamp.getCurrentHealth());
+rightPane.setPbarHp((int)RightChamp.getCurrentHealth());
 
 		}
 
-		if (LeftChamp.getHealth() <= 0) {
+		if (LeftChamp.getCurrentHealth() <= 0) {
 			RightChamp.setVictory();
 			rightPane.setLiveOutput("VICTORY");
 			leftPane.setLiveOutput("DEFEAT");
@@ -74,6 +65,9 @@ public class FightManager implements Runnable {
 		RightChamp.requestStop();
 
 	}
+	
+
+	
 
 	public void addRightChampion(Champion rightChamp2) {
 		RightChamp = rightChamp2;
