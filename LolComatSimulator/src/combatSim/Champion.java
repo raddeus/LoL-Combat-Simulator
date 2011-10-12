@@ -29,7 +29,7 @@ public class Champion implements Runnable {
 	// private double totalDamageHealed;
 	// private double totalDamageMitigatedArmor;
 	// private double totalDamageDealt;
-	private ChampionPane pane;
+	private ChampionInputPane pane;
 
 	private Champion otherChamp;
 	private Attack attack;
@@ -40,7 +40,7 @@ public class Champion implements Runnable {
 	public Champion() {
 	}
 
-	public Champion(String ChampName, ChampionPane Pane, double Health,
+	public Champion(String ChampName, ChampionInputPane Pane, double Health,
 			int AttackDamage, double LifeSteal, double AttackSpeed,
 			double Armor, double CritStrike, double CritDamagePercent,
 			double Dodge, int Tenacity, int CooldownReduction, int AbilityPower) {
@@ -362,7 +362,7 @@ public class Champion implements Runnable {
 
 	}
 
-	public void healLifeSteal(double mitigatedDamage) {
+	public void stealLife(double mitigatedDamage) {
 		double healFor;
 		healFor = mitigatedDamage * (this.lifeSteal / 100.0D);
 		currentHealth += healFor;

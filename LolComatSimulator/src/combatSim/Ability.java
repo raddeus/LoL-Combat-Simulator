@@ -174,11 +174,9 @@ public class Ability implements Runnable {
 
 	public void setAttackDamageScaling(int ADscaling) {
 		attackDamageScaling = ADscaling;
-		
 	}
 
 	public void setAttackPowerScaling(int APscaling) {
-		// TODO Auto-generated method stub
 		attackPowerScaling = APscaling;
 		
 	}

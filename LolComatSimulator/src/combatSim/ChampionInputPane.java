@@ -8,7 +8,7 @@ import javax.swing.JProgressBar;
 import java.awt.Color;
 import javax.swing.JCheckBox;
 
-public class ChampionPane extends JPanel {
+public class ChampionInputPane extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JTextField txtAttackDamage;
 	private JTextField txtAttackSpeed;
@@ -56,7 +56,7 @@ public class ChampionPane extends JPanel {
 	private final JTextField txtAbilityPower = new JTextField();
 	private final JLabel lblAbilityPower = new JLabel("Ability Power");
 
-	public ChampionPane(Fight manager) {
+	public ChampionInputPane(Fight manager) {
 		txtAbilityPower.setColumns(10);
 		txtTenacity.setColumns(10);
 		txtCooldownReduction.setColumns(10);

@@ -4,12 +4,12 @@ public class Fight implements Runnable {
 
 	private Champion LeftChamp;
 	private Champion RightChamp;
-	private ChampionPane leftPane;
-	private ChampionPane rightPane;
+	private ChampionInputPane leftPane;
+	private ChampionInputPane rightPane;
 	private Ability leftAbility;
 	private Ability rightAbility;
 
-	public Fight(ChampionPane LeftPane, ChampionPane RightPane,
+	public Fight(ChampionInputPane LeftPane, ChampionInputPane RightPane,
 			Ability LeftAbility, Ability RightAbility) {
 		this.leftPane = LeftPane;
 		this.rightPane = RightPane;

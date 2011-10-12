@@ -14,8 +14,8 @@ import javax.swing.JLabel;
 public class MainWindow extends JFrame {
 
 	Fight FightManager;
-	ChampionPane leftPane = new ChampionPane(FightManager);
-	ChampionPane rightPane = new ChampionPane(FightManager);
+	ChampionInputPane leftPane = new ChampionInputPane(FightManager);
+	ChampionInputPane rightPane = new ChampionInputPane(FightManager);
 	Thread FightManagerThread;
 	Champion leftChamp;
 	Champion rightChamp;

@@ -41,7 +41,7 @@ public class Attack implements Runnable {
 		while (!stop && !paused && champion.getHealth() > 0) {
 		
 			otherChampion.takeAttackDamage(champion.getRawAttackDamageOut());
-			champion.healLifeSteal(otherChampion.getLastDamageTaken());
+			champion.stealLife(otherChampion.getLastDamageTaken());
 			//wait between autos
 			
 			try {
