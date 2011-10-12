@@ -41,13 +41,13 @@ public class AbilityPane extends JPanel {
 	private JTextField txtEnergyCost;
 	private JTextField txtAnimationTime;
 	private JTextField txtRank;
+	private JTextField txtFearDuration;
 
 	/**
 	 * Create the panel.
 	 */
 	public AbilityPane() {
-		setLayout(new MigLayout("", "[80.00][55.00][][59.00]",
-				"[][][][][][][][][][][][][][][][][][][][][][]"));
+		setLayout(new MigLayout("", "[80.00][55.00,grow][][59.00]", "[][][][][][][][][][][][][][][][][][][][][][][]"));
 		JRadioButton rdbtnMagic = new JRadioButton("Magic");
 		rdbtnMagic.setEnabled(false);
 		JRadioButton rdbtnPhysical = new JRadioButton("Physical");
@@ -266,89 +266,97 @@ public class AbilityPane extends JPanel {
 		JLabel lblDistance = new JLabel("Distance");
 		lblDistance.setEnabled(false);
 		add(lblDistance, "cell 2 15,alignx center");
+		
+		JLabel lblFear = new JLabel("Fear");
+		add(lblFear, "cell 0 16,alignx trailing");
+		
+		txtFearDuration = new JTextField();
+		txtFearDuration.setText("0");
+		txtFearDuration.setColumns(10);
+		add(txtFearDuration, "cell 1 16,growx");
 
 		JLabel chckbxKnockback = new JLabel("KnockBack");
-		add(chckbxKnockback, "cell 0 16");
+		add(chckbxKnockback, "cell 0 17");
 
 		txtKnockBack = new JTextField();
 		txtKnockBack.setEnabled(false);
 		txtKnockBack.setText("0");
-		add(txtKnockBack, "cell 1 16,growx");
+		add(txtKnockBack, "cell 1 17,growx");
 		txtKnockBack.setColumns(10);
 
 		txtKnockBackDistance = new JTextField();
 		txtKnockBackDistance.setEnabled(false);
 		txtKnockBackDistance.setText("0");
-		add(txtKnockBackDistance, "cell 2 16,growx");
+		add(txtKnockBackDistance, "cell 2 17,growx");
 		txtKnockBackDistance.setColumns(10);
 
 		JCheckBox chckbxKnockup = new JCheckBox("KnockUp");
 		chckbxKnockup.setEnabled(false);
-		add(chckbxKnockup, "cell 0 17");
+		add(chckbxKnockup, "cell 0 18");
 
 		JLabel lblDuration_1 = new JLabel("Duration");
 		lblDuration_1.setEnabled(false);
-		add(lblDuration_1, "cell 1 18");
+		add(lblDuration_1, "cell 1 19");
 
 		JCheckBox chckbxSlow = new JCheckBox("Slow");
 		chckbxSlow.setEnabled(false);
-		add(chckbxSlow, "cell 0 19");
+		add(chckbxSlow, "cell 0 20");
 
 		textField_8 = new JTextField();
 		textField_8.setEnabled(false);
 		textField_8.setText("0");
-		add(textField_8, "cell 1 19,growx");
+		add(textField_8, "cell 1 20,growx");
 		textField_8.setColumns(10);
 
 		textField_10 = new JTextField();
 		textField_10.setEnabled(false);
 		textField_10.setText("0");
-		add(textField_10, "cell 2 19,growx");
+		add(textField_10, "cell 2 20,growx");
 		textField_10.setColumns(10);
 
 		JCheckBox checkBox_2 = new JCheckBox("%");
 		checkBox_2.setEnabled(false);
-		add(checkBox_2, "cell 3 19");
+		add(checkBox_2, "cell 3 20");
 
 		JCheckBox chckbxReduceArmor = new JCheckBox("Reduce Armor");
 		chckbxReduceArmor.setEnabled(false);
-		add(chckbxReduceArmor, "cell 0 20");
+		add(chckbxReduceArmor, "cell 0 21");
 
 		textField_11 = new JTextField();
 		textField_11.setEnabled(false);
 		textField_11.setText("0");
-		add(textField_11, "cell 1 20,growx");
+		add(textField_11, "cell 1 21,growx");
 		textField_11.setColumns(10);
 
 		textField_12 = new JTextField();
 		textField_12.setEnabled(false);
 		textField_12.setText("0");
-		add(textField_12, "cell 2 20,growx");
+		add(textField_12, "cell 2 21,growx");
 		textField_12.setColumns(10);
 
 		JCheckBox checkBox = new JCheckBox("%");
 		checkBox.setEnabled(false);
-		add(checkBox, "cell 3 20");
+		add(checkBox, "cell 3 21");
 
 		JCheckBox chckbxReduceMr = new JCheckBox("Reduce MR");
 		chckbxReduceMr.setEnabled(false);
-		add(chckbxReduceMr, "cell 0 21");
+		add(chckbxReduceMr, "cell 0 22");
 
 		textField_13 = new JTextField();
 		textField_13.setEnabled(false);
 		textField_13.setText("0");
-		add(textField_13, "cell 1 21,growx");
+		add(textField_13, "cell 1 22,growx");
 		textField_13.setColumns(10);
 
 		textField_14 = new JTextField();
 		textField_14.setEnabled(false);
 		textField_14.setText("0");
-		add(textField_14, "cell 2 21,growx");
+		add(textField_14, "cell 2 22,growx");
 		textField_14.setColumns(10);
 
 		JCheckBox checkBox_1 = new JCheckBox("%");
 		checkBox_1.setEnabled(false);
-		add(checkBox_1, "cell 3 21");
+		add(checkBox_1, "cell 3 22");
 
 	}
 
@@ -362,7 +370,7 @@ public class AbilityPane extends JPanel {
 		abilityOut.setSilences(Long.parseLong(txtSilenceDuration.getText()));
 		abilityOut.setSuppresses(Long.parseLong(txtSuppressDuration.getText()));
 		abilityOut.setBlinds(Long.parseLong(txtBlindDuration.getText()));
-
+		abilityOut.setFears(Long.parseLong(txtFearDuration.getText()));
 		return abilityOut;
 	}
 }

@@ -26,6 +26,9 @@ public class ChampionPane extends JPanel {
 	private int maxHealth;
 	private double dodge;
 	private double critdamage;
+	private int tenacity;
+	private int cooldownReduction;
+	private int abilityPower;
 
 	JLabel lblAttackDamage = new JLabel("Attack Damage");
 	JLabel lblAttackSpeed = new JLabel("Attack Speed");
@@ -46,11 +49,20 @@ public class ChampionPane extends JPanel {
 
 	Fight FightManager;
 	private final JLabel label = new JLabel("-----------------");
+	private final JTextField txtCooldownReduction = new JTextField();
+	private final JLabel lblCooldownreduction = new JLabel("CooldownReduction%");
+	private final JLabel lblTenacity = new JLabel("Tenacity");
+	private final JTextField txtTenacity = new JTextField();
+	private final JTextField txtAbilityPower = new JTextField();
+	private final JLabel lblAbilityPower = new JLabel("Ability Power");
 
 	public ChampionPane(Fight manager) {
+		txtAbilityPower.setColumns(10);
+		txtTenacity.setColumns(10);
+		txtCooldownReduction.setColumns(10);
 		this.FightManager = manager;
 
-		setLayout(new MigLayout("", "[grow][55.00,grow]", "[][][][][][][][][][][][24.00][][][][][]"));
+		setLayout(new MigLayout("", "[grow][55.00,grow]", "[][][][][][][][][][][][][][][24.00][][][][][]"));
 		add(lblAttackDamage, "cell 0 0,alignx trailing");
 		txtAttackDamage = new JTextField();
 		add(txtAttackDamage, "cell 1 0,growx");
@@ -84,15 +96,27 @@ public class ChampionPane extends JPanel {
 		txtCritDamage.setColumns(10);
 		add(txtCritDamage, "cell 1 7,growx");
 		
-		add(label, "cell 0 10 2 1,alignx center");
-		add(lblLiveOutput, "cell 0 12 2 1,alignx center");
-		add(lblCurrentHealth, "cell 0 13 2 1,alignx center");
+		add(lblCooldownreduction, "cell 0 8,alignx trailing");
+		
+		add(txtCooldownReduction, "cell 1 8,growx");
+		
+		add(lblTenacity, "cell 0 9,alignx trailing");
+		
+		add(txtTenacity, "cell 1 9,growx");
+		
+		add(lblAbilityPower, "cell 0 10,alignx trailing");
+		
+		add(txtAbilityPower, "cell 1 10,growx");
+		
+		add(label, "cell 0 13 2 1,alignx center");
+		add(lblLiveOutput, "cell 0 15 2 1,alignx center");
+		add(lblCurrentHealth, "cell 0 16 2 1,alignx center");
 		pbCurrentHealth.setToolTipText("Current HP");
-		add(pbCurrentHealth, "cell 0 14 2 1,alignx center");
+		add(pbCurrentHealth, "cell 0 17 2 1,alignx center");
 		lblHeal.setForeground(Color.GREEN);
-		add(lblHeal, "cell 0 15 2 1,alignx center");
+		add(lblHeal, "cell 0 18 2 1,alignx center");
 
-		add(lblCCStatus, "cell 0 16");
+		add(lblCCStatus, "cell 0 19");
 	}
 
 	public void initPbar(int health) {
@@ -118,10 +142,13 @@ public class ChampionPane extends JPanel {
 		health = Integer.parseInt(txtHealth.getText());
 		critdamage = Double.parseDouble(txtCritDamage.getText());
 		dodge = Double.parseDouble(txtDodge.getText());
+		tenacity = Integer.parseInt(txtTenacity.getText());
+		cooldownReduction =	Integer.parseInt(txtCooldownReduction.getText());	
+		abilityPower = Integer.parseInt(txtAbilityPower.getText());
 
 		Champion out = new Champion(ChampName, this, health, attackDamage,
 				lifeSteal, attackSpeed, armor, criticalStrike, critdamage,
-				dodge);
+				dodge, tenacity, cooldownReduction, abilityPower);
 		System.out.println("creating new champion with health:" + health);
 		return out;
 	}

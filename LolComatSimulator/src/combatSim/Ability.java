@@ -1,6 +1,6 @@
 package combatSim;
 
-public class Ability extends Champion implements Runnable {
+public class Ability implements Runnable {
 
 	private long cooldown;
 	private Champion champ;
@@ -15,15 +15,15 @@ public class Ability extends Champion implements Runnable {
 	private boolean suppresses = false;
 	private boolean silences = false;
 	private boolean knockups = false;
-//	
-//	Basically, you will pass an ability in without many parameters. Then you will setStuns()...etc
-	
+	private boolean fears = false;
+
 	private long stunDuration;
 	private long blindDuration;
 	private long snareDuration;
 	private long suppressDuration;
 	private long silenceDuration;
 	private long knockupDuration;
+	private long fearDuration;
 	
 	private int attackPowerScaling;
 	private int attackDamageScaling;
@@ -39,40 +39,36 @@ public class Ability extends Champion implements Runnable {
 
 	@Override
 	public void run() {
-
 		while (true) {
-
 			if (ready && !paused) {
-
 				if (stuns) {
-					otherChamp.stun(stunDuration);
+					otherChamp.stun(applyCooldownReduction(stunDuration));
 				}
 				if (blinds) {
-					otherChamp.blind(blindDuration);
+					otherChamp.blind(applyCooldownReduction(blindDuration));
 				}
 				if (suppresses) {
-					otherChamp.suppress(suppressDuration);
+					otherChamp.suppress(applyCooldownReduction(suppressDuration));
 				}
 				if (silences) {
-					otherChamp.silence(silenceDuration);
+					otherChamp.silence(applyCooldownReduction(silenceDuration));
 				}
 				if (snares) {
-					otherChamp.snare(snareDuration);
+					otherChamp.snare(applyCooldownReduction(snareDuration));
 				}
 				if (knockups) {
-					otherChamp.knockup(knockupDuration);
+					otherChamp.knockup(applyCooldownReduction(knockupDuration));
+				}
+				if (fears) {
+					otherChamp.fear(applyCooldownReduction(fearDuration));
 				}
 				//otherChamp.takeMagicDamage()
 				this.setNotReady();
-
 			} else{
-
-				// what to do when this ability is ready.
 				if (pauseDuration > cooldown) {
 					try {
 						Thread.sleep(pauseDuration);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} finally {
 						this.setReady();
@@ -83,7 +79,6 @@ public class Ability extends Champion implements Runnable {
 					try {
 						Thread.sleep(cooldown);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} finally {
 						this.setReady();
@@ -95,6 +90,10 @@ public class Ability extends Champion implements Runnable {
 
 	}
 
+	public long applyCooldownReduction(long a){
+		return ((100-(long)champ.getCooldownReduction())/100)*a;	
+	}
+	
 	public boolean isReady() {
 		return ready;
 	}
@@ -110,6 +109,7 @@ public class Ability extends Champion implements Runnable {
 	public void setCooldown(long cd){
 		cooldown = cd;
 	}
+	
 	public void setStuns(long duration){
 		if (duration != 0){
 		stuns = true;
@@ -127,6 +127,7 @@ public class Ability extends Champion implements Runnable {
 		else
 			blinds = false;
 	}
+	
 	public void setSnares(long duration){
 		if (duration != 0){
 		snares = true;
@@ -135,6 +136,7 @@ public class Ability extends Champion implements Runnable {
 		else
 			snares = false;
 	}
+	
 	public void setSuppresses(long duration){
 		if (duration != 0){
 		suppresses = true;
@@ -143,6 +145,7 @@ public class Ability extends Champion implements Runnable {
 		else
 			suppresses = false;
 	}
+	
 	public void setSilences(long duration){
 		if (duration != 0){
 		silences = true;
@@ -151,6 +154,7 @@ public class Ability extends Champion implements Runnable {
 		else
 			silences = false;
 	}
+	
 	public void setKnockups(long duration){
 		if (duration != 0){
 		knockups = true;
@@ -163,6 +167,7 @@ public class Ability extends Champion implements Runnable {
 	public void setThisChampion(Champion champion){
 		this.champ = champion;
 	}
+	
 	public void setOtherChampion(Champion champion){
 		this.otherChamp = champion;
 	}
@@ -177,4 +182,14 @@ public class Ability extends Champion implements Runnable {
 		attackPowerScaling = APscaling;
 		
 	}
+
+	public void setFears(long duration) {
+		if (duration != 0){
+		fears = true;
+		fearDuration = duration;
+		}
+		else
+			fears = false;	
+	}
+	
 }

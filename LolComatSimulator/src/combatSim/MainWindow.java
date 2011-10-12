@@ -46,13 +46,13 @@ public class MainWindow extends JFrame {
 	}
 
 	public MainWindow() {
-		setTitle("LoL AD Simulator");
+		setTitle("League of Legends Combat Simulator");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1250, 740);
+		setBounds(100, 100, 1250, 750);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[grow][215.00][215.00][]", "[grow][][][grow][grow]"));
+		contentPane.setLayout(new MigLayout("", "[][215.00][215.00][]", "[grow][][][grow][grow]"));
 		contentPane.add(leftAbilityPane, "cell 0 0,grow");
 		contentPane.add(leftPane, "cell 1 0,grow");
 		contentPane.add(rightPane, "cell 2 0,grow");

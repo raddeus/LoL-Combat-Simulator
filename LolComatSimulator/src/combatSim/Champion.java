@@ -12,6 +12,9 @@ public class Champion implements Runnable {
 	private double armor;
 	private double criticalStrike;
 	private double dodge;
+	private int cooldownReduction;
+	private int tenacity;
+	private int abilityPower;
 	private double critDamagePercent;
 	private boolean isReadyToAttack;
 	private boolean stop = false;
@@ -19,7 +22,6 @@ public class Champion implements Runnable {
 	private boolean victory = false;
 	private long stunDuration;
 	private String champName;
-	private boolean isBlinded = false;
 	private long currentBlindDuration = 0;
 
 	// use these to give relevant infos.
@@ -41,7 +43,7 @@ public class Champion implements Runnable {
 	public Champion(String ChampName, ChampionPane Pane, double Health,
 			int AttackDamage, double LifeSteal, double AttackSpeed,
 			double Armor, double CritStrike, double CritDamagePercent,
-			double Dodge) {
+			double Dodge, int Tenacity, int CooldownReduction, int AbilityPower) {
 		this.champName = ChampName;
 		this.pane = Pane;
 		this.maxHealth = Health;
@@ -54,16 +56,19 @@ public class Champion implements Runnable {
 		this.lifeSteal = LifeSteal;
 		this.victory = false;
 		this.dodge = Dodge;
+		this.tenacity = Tenacity;
+		this.cooldownReduction = CooldownReduction;
+		this.abilityPower = AbilityPower;
 
 	}
 
 	@Override
 	public void run() {
 		attack = new Attack(this, otherChamp);
-		
+
 		ability.setThisChampion(this);
 		ability.setOtherChampion(otherChamp);
-		
+
 		attackThread = new Thread(attack);
 		abilityThread = new Thread(ability);
 
@@ -72,7 +77,8 @@ public class Champion implements Runnable {
 
 		stop = false;
 		while (!stop && this.currentHealth > 0) {
-
+			if (currentHealth > maxHealth)
+				currentHealth = maxHealth;
 		}
 		// set health regulation here, cant go above max or below zero.
 
@@ -116,7 +122,7 @@ public class Champion implements Runnable {
 			// System.out.println("Dodged - 0 dmg taken.");
 		} else {
 			if (this.armor >= 0)// calculates damage after armor
-			{// i hate you thad
+			{
 				System.out.println("took in " + rawDamage + " damage");
 				damageTaken = (rawDamage * (100 / (100 + this.armor)));
 				currentHealth -= damageTaken;
@@ -133,14 +139,13 @@ public class Champion implements Runnable {
 
 	private void setLiveOutput(String string) {
 		pane.setLiveOutput(string);
-		
-	}
 
+	}
 	// getters
 	public double getHealth() {
 		return this.maxHealth;
 	}
-	
+
 	public double getCurrentHealth() {
 		return this.currentHealth;
 	}
@@ -165,6 +170,18 @@ public class Champion implements Runnable {
 		return this.armor;
 	}
 
+	public int getTenacity() {
+		return this.tenacity;
+	}
+
+	public int getCooldownReduction() {
+		return this.cooldownReduction;
+	}
+
+	public int getAbilityPower() {
+		return this.abilityPower;
+	}
+
 	public double getCrit() {
 		return this.criticalStrike;
 	}
@@ -173,9 +190,11 @@ public class Champion implements Runnable {
 	public void setHealth(int a) {
 		maxHealth = a;
 	}
+
 	public void setCurrentHealth(int a) {
 		currentHealth = a;
 	}
+
 	public void setATKsp(double d) {
 		attackSpeed = d;
 	}
@@ -192,7 +211,6 @@ public class Champion implements Runnable {
 		currentBlindDuration = duration;
 	}
 
-
 	public void setLifeSteal(double d) {
 		lifeSteal = d;
 	}
@@ -205,26 +223,30 @@ public class Champion implements Runnable {
 		criticalStrike = d;
 	}
 
+	public void setTenacity(int a) {
+		this.tenacity = a;
+	}
+
+	public void setCooldownReduction(int a) {
+		this.cooldownReduction = a;
+	}
+
+	public void setAbilityPower(int a) {
+		this.abilityPower = a;
+	}
+
 	public boolean isReadyToAttack() {
 		return isReadyToAttack;
 	}
 
-	public boolean isBlinded() {
-		return isBlinded;
-	}
-
-	public void cancelBlind() {
-		this.isBlinded = false;
-	}
-
 	public void stun(long duration) {
 		this.pane.setCCStatus("STUNNED");
-		attack.pause(duration);
-		ability.pause(duration);
+		attack.pause(applyTenacity(duration));
+		ability.pause(applyTenacity(duration));
 
 		// sleeps self
 		try {
-			Thread.sleep(duration);
+			Thread.sleep(applyTenacity(duration));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -236,11 +258,11 @@ public class Champion implements Runnable {
 
 	public void blind(long duration) {
 		this.pane.setCCStatus("BLINDED");
-		attack.pause(duration);
+		attack.pause(applyTenacity(duration));
 
 		// sleeps self
 		try {
-			Thread.sleep(duration);
+			Thread.sleep(applyTenacity(duration));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -252,9 +274,9 @@ public class Champion implements Runnable {
 
 	public void silence(long duration) {
 		this.pane.setCCStatus("Silenced");
-		ability.pause(duration);
+		ability.pause(applyTenacity(duration));
 		try {
-			Thread.sleep(duration);
+			Thread.sleep(applyTenacity(duration));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -263,54 +285,76 @@ public class Champion implements Runnable {
 		}
 
 	}
+
 	public void suppress(long duration) {
 		this.pane.setCCStatus("SUPPRESSED");
-		attack.pause(duration);
-		ability.pause(duration);
+		attack.pause(applyTenacity(duration));
+		ability.pause(applyTenacity(duration));
 
 		// sleeps self
 		try {
-			Thread.sleep(duration);
+			Thread.sleep(applyTenacity(duration));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			this.pane.setCCStatus("-");
 		}
-		
+
 	}
 
 	public void snare(long duration) {
 		this.pane.setCCStatus("SNARED");
 
-//movementManager.pause(duration);
+		// movementManager.pause(applyTenacity(duration));
 		// sleeps self
 		try {
-			Thread.sleep(duration);
+			Thread.sleep(applyTenacity(duration));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			this.pane.setCCStatus("-");
 		}
-		
+
+	}
+	
+	public void fear(long duration) {
+		this.pane.setCCStatus("FEARED");
+		attack.pause(applyTenacity(duration));
+		ability.pause(applyTenacity(duration));
+//movement class stuff
+		// sleeps self
+		try {
+			Thread.sleep(applyTenacity(duration));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			this.pane.setCCStatus("-");
+		}
+
 	}
 
 	public void knockup(long duration) {
 		this.pane.setCCStatus("KNOCKUP");
-		attack.pause(duration);
-		ability.pause(duration);
+		attack.pause(applyTenacity(duration));
+		ability.pause(applyTenacity(duration));
 
 		// sleeps self
 		try {
-			Thread.sleep(duration);
+			Thread.sleep(applyTenacity(duration));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			this.pane.setCCStatus("-");
 		}
-		
+
+	}
+
+	private long applyTenacity(long ccduration) {
+		return ((100-tenacity)/100)*ccduration;
 	}
 
 	public void requestStop() {
@@ -333,7 +377,6 @@ public class Champion implements Runnable {
 		return victory;
 	}
 
-
 	public long getStunDuration() {
 		return stunDuration;
 	}
@@ -343,7 +386,8 @@ public class Champion implements Runnable {
 	}
 
 	public void setAbility(Ability Ability) {
-	ability = Ability;
+		ability = Ability;
 	}
+
 
 }

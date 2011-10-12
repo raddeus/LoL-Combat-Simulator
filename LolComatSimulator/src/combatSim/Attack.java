@@ -1,6 +1,6 @@
 package combatSim;
 
-public class Attack extends Champion implements Runnable {
+public class Attack implements Runnable {
 	private Champion champion;
 	private Champion otherChampion;
 	private boolean stop = false;
